@@ -1,0 +1,85 @@
+:root {
+  /* Color Palette - Zuma Brand */
+  --color-bg-main: #0F172A;
+  /* Deep slate for background */
+  --color-bg-surface: #002A3A;
+  /* Zuma Dark Blue */
+  --color-bg-surface-hover: #00364A;
+  --color-bg-surface-active: #00425A;
+
+  --color-primary: #00E273;
+  /* Zuma Green - Primary Actions */
+  --color-primary-glow: rgba(0, 226, 115, 0.4);
+
+  --color-accent: #00E273;
+  --color-text-main: #ffffff;
+  --color-text-muted: #94A3B8;
+  --color-border: #1E4D5F;
+
+  /* Status Colors */
+  --status-queue: #ef4444;
+  --status-picking: #f97316;
+  --status-final: #eab308;
+  --status-dnpb: #8b5cf6;
+  --status-delivery: #3b82f6;
+  --status-arrived: #06b6d4;
+  --status-completed: #22c55e;
+
+  /* Spacing & Layout */
+  --sidebar-width: 260px;
+  --header-height: 64px;
+
+  /* Effects */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.15);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-glow: 0 0 15px var(--color-primary-glow);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
