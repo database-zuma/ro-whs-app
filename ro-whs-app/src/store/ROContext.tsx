@@ -8,23 +8,50 @@ import { gsheetService } from '../services/gsheetService';
 
 interface ROContextType {
     items: ROItem[];
-    moveStatus: (roId: string) => void; // Moves ALL items with this RO ID
+    moveStatus: (roId: string) => void;
     updateQty: (uid: string, scope: 'ro' | 'wh', location: 'ddd' | 'ljbb', value: number) => void;
     getFormattedItems: (statusFilter?: ROStatus) => ROItem[];
+    connectionStatus: {
+        isConnected: boolean;
+        lastSync: Date | null;
+    };
 }
 
 const ROContext = createContext<ROContextType | undefined>(undefined);
 
 export const ROProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [items, setItems] = useState<ROItem[]>([]);
+    const [connectionStatus, setConnectionStatus] = useState<{
+        isConnected: boolean;
+        lastSync: Date | null;
+    }>({
+        isConnected: false,
+        lastSync: null,
+    });
 
     // Load initial data
     useEffect(() => {
         const loadData = async () => {
-            const data = await gsheetService.fetchROQueue();
-            setItems(data);
+            try {
+                const data = await gsheetService.fetchROQueue();
+                setItems(data);
+                setConnectionStatus({
+                    isConnected: true,
+                    lastSync: new Date(),
+                });
+            } catch (error) {
+                console.error('Failed to connect to Google Sheets:', error);
+                setConnectionStatus({
+                    isConnected: false,
+                    lastSync: null,
+                });
+            }
         };
         loadData();
+
+        // Poll every 30 seconds to check connection status
+        const interval = setInterval(loadData, 30000);
+        return () => clearInterval(interval);
     }, []);
 
     const moveStatus = (roId: string) => {
@@ -94,7 +121,7 @@ export const ROProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     };
 
     return (
-        <ROContext.Provider value={{ items, moveStatus, updateQty, getFormattedItems }}>
+        <ROContext.Provider value={{ items, moveStatus, updateQty, getFormattedItems, connectionStatus }}>
             {children}
         </ROContext.Provider>
     );

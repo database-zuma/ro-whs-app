@@ -21,12 +21,15 @@
     cursor: pointer;
     background: rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .header-left {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .ro-id-badge {
@@ -37,6 +40,7 @@
     border-radius: 6px;
     font-family: monospace;
     font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .store-info h3 {
@@ -72,12 +76,15 @@
 
 .table-responsive {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .ro-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
+    min-width: 600px;
+    /* Prevents table from becoming too cramped */
 }
 
 .ro-table th {
@@ -160,6 +167,7 @@
     transition: all 0.2s;
     border: none;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .action-button.primary {
@@ -188,4 +196,169 @@
 .readonly-input:focus {
     outline: none;
     box-shadow: none !important;
+}
+
+/* Tablet: 768px - 1024px */
+@media (max-width: 1024px) {
+    .group-header {
+        padding: 0.9rem 1.25rem;
+    }
+
+    .ro-id-badge {
+        font-size: 0.85rem;
+    }
+
+    .store-info h3 {
+        font-size: 0.95rem;
+    }
+
+    .ro-table {
+        font-size: 0.85rem;
+        min-width: 550px;
+    }
+
+    .ro-table th,
+    .ro-table td {
+        padding: 0.6rem;
+    }
+
+    .qty-cell input {
+        width: 55px;
+        padding: 0.35rem;
+    }
+
+    .action-button {
+        padding: 0.55rem 1.1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Mobile: < 768px */
+@media (max-width: 768px) {
+    .group-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .header-left {
+        width: 100%;
+        gap: 0.75rem;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .ro-id-badge {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.6rem;
+    }
+
+    .store-info h3 {
+        font-size: 0.9rem;
+    }
+
+    .store-info .timestamp {
+        font-size: 0.75rem;
+    }
+
+    .group-body {
+        padding: 0.75rem;
+    }
+
+    .ro-table {
+        font-size: 0.8rem;
+        min-width: 500px;
+    }
+
+    .ro-table th,
+    .ro-table td {
+        padding: 0.5rem;
+    }
+
+    .qty-cell input {
+        width: 50px;
+        padding: 0.3rem;
+        font-size: 0.85rem;
+    }
+
+    .article-cell .code {
+        font-size: 0.8rem;
+    }
+
+    .article-cell .name {
+        font-size: 0.75rem;
+    }
+
+    .group-footer {
+        padding: 0.75rem 1rem;
+    }
+
+    .action-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Small Mobile: < 480px */
+@media (max-width: 480px) {
+    .group-header {
+        padding: 0.65rem 0.75rem;
+    }
+
+    .header-left {
+        gap: 0.5rem;
+    }
+
+    .ro-id-badge {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+    }
+
+    .store-info h3 {
+        font-size: 0.85rem;
+    }
+
+    .store-info .timestamp {
+        font-size: 0.7rem;
+    }
+
+    .item-count {
+        font-size: 0.7rem;
+        padding: 1px 6px;
+    }
+
+    .group-body {
+        padding: 0.5rem;
+    }
+
+    .ro-table {
+        font-size: 0.75rem;
+        min-width: 450px;
+    }
+
+    .ro-table th,
+    .ro-table td {
+        padding: 0.4rem;
+    }
+
+    .qty-cell input {
+        width: 45px;
+        padding: 0.25rem;
+        font-size: 0.8rem;
+    }
+
+    .sub-header th {
+        font-size: 0.7rem;
+    }
+
+    .group-footer {
+        padding: 0.65rem 0.75rem;
+    }
+
+    .action-button {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.8rem;
+        gap: 0.35rem;
+    }
 }
