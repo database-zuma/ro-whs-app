@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZvkni6zsJkOGwb9xB5QewZSFUQ5nmeaHb4t3gfeR4whw_zOcrh0UJESp_TFoirMvLQg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbybtmlhlca_8vqfyoQZXHQfa_N9dHLjV2pKxoUjkowScbeKaAJ16nVCkL--9QP-WW-7lA/exec";
 // Fallback: CSV output (has 5-15 min cache delay, use only if Apps Script fails)
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR81nB2kdJlbcNmzSdwcAFKuGIv96gnE3MdPDC-qKLpWkqJDwg-67_b7ilpItiIJF420L9Mz8WRitfl/pub?output=csv";
 
