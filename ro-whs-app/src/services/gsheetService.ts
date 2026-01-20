@@ -48,7 +48,7 @@ export const gsheetService = {
             console.log("Fetching from Apps Script (real-time)...");
             const response = await fetch(APPS_SCRIPT_URL, {
                 method: "GET",
-                headers: { "Accept": "application/json" }
+                redirect: "follow"
             });
 
             if (!response.ok) {
@@ -122,9 +122,10 @@ export const gsheetService = {
             console.log("Syncing to GSheet:", payload);
             // payload format: { action: "updateQty", roId: "...", kodeArtikel: "...", location: "...", val: 123 }
             // or { action: "moveStatus", roId: "...", newStatus: "..." }
+            // Note: Do NOT use credentials:'include' - incompatible with Apps Script CORS (*) response
             const response = await fetch(APPS_SCRIPT_URL, {
                 method: "POST",
-                credentials: 'include',
+                redirect: "follow",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify(payload)
             });
