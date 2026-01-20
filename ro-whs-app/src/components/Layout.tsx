@@ -48,6 +48,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
             <aside className={clsx('sidebar', isOpen && 'sidebar-open')}>
                 <div className="sidebar-header">
+                    <img src="/LogoZUMA.png" alt="Zuma Logo" className="sidebar-logo" />
                     <h2>RO WHS</h2>
                     <div className="sidebar-header-right">
                         <span className="badge">v1.0</span>

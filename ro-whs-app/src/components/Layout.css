@@ -56,6 +56,12 @@
     gap: 0.5rem;
 }
 
+.sidebar-logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+}
+
 .sidebar-header h2 {
     font-size: 1.5rem;
     font-weight: 700;

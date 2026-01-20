@@ -116,8 +116,8 @@ export const ROProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         };
         loadData();
 
-        // Poll every 30 seconds to check connection status
-        const interval = setInterval(loadData, 30000);
+        // Poll every 60 seconds to reduce race conditions with GSheet save time
+        const interval = setInterval(loadData, 60000);
         return () => clearInterval(interval);
     }, []);
 
