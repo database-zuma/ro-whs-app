@@ -7,8 +7,11 @@ import { gsheetService } from '../services/gsheetService';
 // const { fetchROQueue, fetchWarehouseStock } = gsheetService;
 
 // Duration to protect local changes from being overwritten by polling (in ms)
-// Google Sheets CSV cache can take up to 5 minutes to update
-const PENDING_CHANGE_PROTECTION_MS = 60000; // 60 seconds
+// Must be longer than polling interval to prevent race conditions
+const PENDING_CHANGE_PROTECTION_MS = 90000; // 90 seconds
+
+// Debounce delay for qty changes to prevent rapid-fire syncs
+const QTY_SYNC_DEBOUNCE_MS = 800; // Wait 800ms after last keystroke before syncing
 
 interface ROContextType {
     items: ROItem[];
@@ -36,6 +39,10 @@ export const ROProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     // Track items with pending local changes to prevent poll overwrites
     // Map of uid/roId -> timestamp when change was made
     const pendingChangesRef = useRef<Map<string, number>>(new Map());
+
+    // Track debounce timeouts for qty syncs
+    // Map of uid -> timeout ID
+    const qtySyncTimeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
     // Helper to check if an item has pending local changes
     const hasPendingChanges = (key: string): boolean => {
@@ -156,7 +163,7 @@ export const ROProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         // 1. Mark as pending to protect from poll overwrites
         pendingChangesRef.current.set(`qty:${uid}`, Date.now());
 
-        // 2. Optimistic UI Update
+        // 2. Optimistic UI Update (immediate)
         setItems(prev => prev.map(item => {
             if (item.uid === uid) {
                 const field = scope === 'ro' ? 'roQty' : 'whQty';
@@ -171,19 +178,32 @@ export const ROProvider: React.FC<{ children: React.ReactNode }> = ({ children }
             return item;
         }));
 
-        // 3. Sync to Backend
-        // Debounce could be added here, but for now we send direct updates
+        // 3. Debounced Sync to Backend
+        // Cancel any pending sync for this uid to prevent race conditions
         if (scope === 'ro') {
-            // Find criteria from item (use current items snapshot for roId/kodeArtikel)
+            const timeoutKey = `${uid}:${location}`;
+            const existingTimeout = qtySyncTimeoutsRef.current.get(timeoutKey);
+            if (existingTimeout) {
+                clearTimeout(existingTimeout);
+            }
+
+            // Find criteria from item (need roId and kodeArtikel for sync)
             const targetItem = items.find(i => i.uid === uid);
             if (targetItem) {
-                gsheetService.syncToGSheet({
-                    action: "updateQty",
-                    roId: targetItem.id,
-                    kodeArtikel: targetItem.kodeArtikel,
-                    location: location, // 'ddd' or 'ljbb'
-                    val: value
-                });
+                // Schedule sync after debounce delay
+                const newTimeout = setTimeout(() => {
+                    console.log(`Syncing qty: ${targetItem.id}/${targetItem.kodeArtikel}/${location} = ${value}`);
+                    gsheetService.syncToGSheet({
+                        action: "updateQty",
+                        roId: targetItem.id,
+                        kodeArtikel: targetItem.kodeArtikel,
+                        location: location,
+                        val: value
+                    });
+                    qtySyncTimeoutsRef.current.delete(timeoutKey);
+                }, QTY_SYNC_DEBOUNCE_MS);
+
+                qtySyncTimeoutsRef.current.set(timeoutKey, newTimeout);
             }
         }
     };
