@@ -11,7 +11,7 @@ export const ROList = () => {
     const location = useLocation();
 
     // Determine status from URL path
-    const path = location.pathname.substring(1).replace('-', '_').toUpperCase();
+    const path = location.pathname.substring(1).replaceAll('-', '_').toUpperCase();
     const isValidStatus = STATUS_FLOW.includes(path as ROStatus);
     const statusFilter = isValidStatus ? (path as ROStatus) : 'QUEUE';
 

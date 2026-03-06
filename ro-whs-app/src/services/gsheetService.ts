@@ -9,7 +9,7 @@ export const RO_DATABASE_SHEET = "RO WHS - 01 Queue Databases";
 /**
  * Transform raw sheet row to app format
  */
-const transformRow = (row: any) => {
+const transformRow = (row: Record<string, string>) => {
     // Normalize status (Handle Spaces vs Underscores, and Typos)
     let statusRaw = (row['Status'] || row['STATUS'] || '').toString().toUpperCase();
     statusRaw = statusRaw.replace(/ /g, '_'); // Replace spaces with underscores matches Enum
@@ -88,7 +88,7 @@ export const gsheetService = {
                         complete: (results) => {
                             const rawData = results.data;
                             console.log("CSV Parsed (fallback):", rawData);
-                            const transformed = rawData.map((row: any) => transformRow(row));
+                            const transformed = rawData.map((row: Record<string, string>) => transformRow(row));
                             resolve(transformed);
                         },
                         // Bug #16: Reject on parse error so outer catch can handle it
@@ -116,7 +116,7 @@ export const gsheetService = {
     /**
      * Sync local changes back to GSheet
      */
-    syncToGSheet: async (payload: any) => {
+    syncToGSheet: async (payload: Record<string, unknown>) => {
         if (!APPS_SCRIPT_URL) return;
 
         try {

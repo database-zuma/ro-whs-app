@@ -39,26 +39,26 @@ export const ROProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     // Track items with pending local changes to prevent poll overwrites
     // Map of key -> { timestamp, expectedValue }
     // Protection clears when poll confirms the expected value OR max time expires
-    const pendingChangesRef = useRef<Map<string, { timestamp: number; expectedValue: any }>>(new Map());
+    const pendingChangesRef = useRef<Map<string, { timestamp: number; expectedValue: unknown }>>(new Map());
 
     // Track debounce timeouts for qty syncs
     // Map of uid -> timeout ID
     const qtySyncTimeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
     // Deep compare for objects (used for qty comparison)
-    const deepEqual = (a: any, b: any): boolean => {
+    const deepEqual = (a: unknown, b: unknown): boolean => {
         if (a === b) return true;
         if (typeof a !== 'object' || typeof b !== 'object') return false;
         if (a === null || b === null) return false;
-        const keysA = Object.keys(a);
-        const keysB = Object.keys(b);
+        const keysA = Object.keys(a as Record<string, unknown>);
+        const keysB = Object.keys(b as Record<string, unknown>);
         if (keysA.length !== keysB.length) return false;
-        return keysA.every(key => deepEqual(a[key], b[key]));
+        return keysA.every(key => deepEqual((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]));
     };
 
     // Helper to check if an item has pending local changes
     // Returns true if we should keep local value, false if we should accept poll value
-    const shouldKeepLocalValue = (key: string, fetchedValue: any): boolean => {
+    const shouldKeepLocalValue = (key: string, fetchedValue: unknown): boolean => {
         const pending = pendingChangesRef.current.get(key);
         if (!pending) return false;
 
@@ -143,7 +143,12 @@ export const ROProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
         // Poll every 60 seconds to reduce race conditions with GSheet save time
         const interval = setInterval(loadData, 60000);
-        return () => clearInterval(interval);
+        return () => {
+          clearInterval(interval);
+          // Cleanup debounce timeouts on unmount
+          qtySyncTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+          qtySyncTimeoutsRef.current.clear();
+        };
     }, []);
 
     const moveStatus = (roId: string) => {

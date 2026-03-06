@@ -8,7 +8,7 @@ export const parseROData = (): ROItem[] => {
         skipEmptyLines: true,
     });
 
-    return result.data.map((row: any, index: number) => {
+    return (result.data as Record<string, string>[]).map((row, index: number) => {
         // Normalize status
         let statusRaw = (row['STATUS'] || '').toUpperCase();
         if (statusRaw === 'QUEQUE') statusRaw = 'QUEUE';
@@ -16,7 +16,7 @@ export const parseROData = (): ROItem[] => {
         const validStatus: ROStatus = statusRaw as ROStatus;
 
         return {
-            uid: `row-${index}-${Date.now()}`, // Generate unique ID
+            uid: `row-${index}-${row['SESSION ID']}-${(row['KODE ARTIKEL'] || '').replace(/[^a-zA-Z0-9]/g, '')}`, // Deterministic UID
             id: row['SESSION ID'],
             storeName: row['STORE NAME'],
             kodeArtikel: row['KODE ARTIKEL'],

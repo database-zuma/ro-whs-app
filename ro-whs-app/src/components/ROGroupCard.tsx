@@ -28,7 +28,7 @@ export const ROGroupCard: React.FC<ROGroupCardProps> = ({ group }) => {
         val: string
     ) => {
         const num = parseInt(val, 10);
-        if (!isNaN(num)) {
+        if (!isNaN(num) && num >= 0) {
             updateQty(uid, scope, location, num);
         }
     };
