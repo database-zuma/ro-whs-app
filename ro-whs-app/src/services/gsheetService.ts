@@ -81,7 +81,7 @@ export const gsheetService = {
                 const response = await fetch(`${SHEET_CSV_URL}&t=${cacheBuster}`);
                 const csvText = await response.text();
 
-                return new Promise((resolve) => {
+                return new Promise((resolve, reject) => {
                     Papa.parse(csvText, {
                         header: true,
                         skipEmptyLines: true,
@@ -91,9 +91,10 @@ export const gsheetService = {
                             const transformed = rawData.map((row: any) => transformRow(row));
                             resolve(transformed);
                         },
+                        // Bug #16: Reject on parse error so outer catch can handle it
                         error: (err) => {
                             console.error("CSV Parse Error:", err);
-                            resolve([]);
+                            reject(new Error(`CSV parse failed: ${err.message}`));
                         }
                     });
                 });
